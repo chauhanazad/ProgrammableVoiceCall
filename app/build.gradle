@@ -1,0 +1,84 @@
+apply plugin: 'com.android.application'
+
+ext.playCustomRingback = {
+    def playCustomRingback  = System.getenv("playCustomRingback");
+
+    if (playCustomRingback == null) {
+        logger.log(LogLevel.INFO, "Could not locate playCustomRingback environment variable. " +
+                "Trying local.properties")
+        Properties properties = new Properties()
+        if (project.rootProject.file('local.properties').exists()) {
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            playCustomRingback = properties.getProperty('playCustomRingback')
+        }
+    }
+
+    if (playCustomRingback == null) {
+        playCustomRingback = false
+    }
+
+    return playCustomRingback;
+}
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    compileOptions {
+        sourceCompatibility versions.java
+        targetCompatibility versions.java
+    }
+
+    defaultConfig {
+        applicationId "com.twilio.voice.quickstart"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+            buildConfigField("boolean", "playCustomRingback", "${playCustomRingback()}")
+        }
+        debug {
+            buildConfigField("boolean", "playCustomRingback", "${playCustomRingback()}")
+        }
+    }
+
+    // Specify that we want to split up the APK based on ABI
+    splits {
+        abi {
+            // Enable ABI split
+            enable true
+
+            // Clear list of ABIs
+            reset()
+
+            // Specify each architecture currently supported by the Video SDK
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+
+            // Specify that we do not want an additional universal SDK
+            universalApk false
+        }
+    }
+}
+
+dependencies {
+    implementation "com.twilio:audioswitch:${versions.audioSwitch}"
+    implementation "com.twilio:voice-android:${versions.voiceAndroid}"
+    implementation "com.google.android.material:material:${versions.material}"
+    implementation "com.google.firebase:firebase-messaging:${versions.firebase}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions.androidxLifecycle}"
+    implementation 'com.google.firebase:firebase-auth:21.0.5'
+    androidTestImplementation "androidx.test.ext:junit:${versions.junit}"
+
+    // Import the BoM
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.5'
+}
+
+apply plugin: 'com.google.gms.google-services'

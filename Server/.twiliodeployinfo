@@ -1,0 +1,10 @@
+{
+	"ACa768dc4d3bae28aa3fd6b8316e61c046:us1": {
+		"serviceSid": "ZS8de49b6f28bf86dbf4d93fb4eb1ae8d1",
+		"latestBuild": "ZBee5cb4ca534ffee054b92f97cdb5219e"
+	},
+	"AC2dfd56ca138bced8c859ba3d6a0d77d0:us1": {
+		"serviceSid": "ZS3012a7a4bf327e0cf3117c33389b2ae9",
+		"latestBuild": "ZB28e583f070a9c08d565a9b25f199e6a2"
+	}
+}
